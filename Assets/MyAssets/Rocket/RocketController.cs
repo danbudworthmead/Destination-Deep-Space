@@ -15,9 +15,15 @@ namespace MyAssets.Rocket
         [SerializeField] private Image fuelFillImage;
     
         private static readonly int PropulsionAnimHash = Animator.StringToHash("propulsion");
-        public bool DeepSpace { get; private set; }
+        private bool _deepSpace;
         private float _maxFuel;
-        private float _heldTime = 0f;
+        private float _heldTime;
+
+        private void OnBecameInvisible()
+        {
+            if (_deepSpace) return;
+            Invoke(nameof(ResetLevel), 1f);
+        }
 
         private void Awake()
         {
@@ -31,7 +37,7 @@ namespace MyAssets.Rocket
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
         
-            if (DeepSpace) return;
+            if (_deepSpace) return;
             var propulsion = Input.GetMouseButton(0) && fuel > 0;
             animator.SetBool(PropulsionAnimHash, propulsion);
             if (propulsion)
@@ -63,9 +69,10 @@ namespace MyAssets.Rocket
 
         public void ReachedDeepSpace()
         {
+            if (_deepSpace) return;
             animator.SetBool(PropulsionAnimHash, false);
-            DeepSpace = true;
-            Invoke(nameof(ResetLevel), 2f);
+            _deepSpace = true;
+            Invoke(nameof(NextLevel), 2f);
         }
 
         private void ResetLevel()
@@ -73,9 +80,19 @@ namespace MyAssets.Rocket
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
+        private void NextLevel()
+        {
+            var level = SceneManager.GetActiveScene().buildIndex + 1;
+            if (level >= SceneManager.sceneCountInBuildSettings)
+            {
+                level = 0;
+            }
+            SceneManager.LoadScene(level);
+        }
+
         public void AddGravity(Vector2 gravity)
         {
-            if (DeepSpace) return;
+            if (_deepSpace) return;
             rigidbody2D.AddForceAtPosition(gravity, transform.position + transform.up);
         }
 
