@@ -14,6 +14,7 @@ namespace MyAssets.Rocket
         [SerializeField] private Slider slider;
         [SerializeField] private float fuel;
         [SerializeField] private Image fuelFillImage;
+        [SerializeField] private TrailRenderer fire;
     
         private static readonly int PropulsionAnimHash = Animator.StringToHash("propulsion");
         private bool _deepSpace;
@@ -53,15 +54,19 @@ namespace MyAssets.Rocket
             animator.SetBool(PropulsionAnimHash, propulsion);
             if (propulsion)
             {
+                fire.emitting = true;
                 rigidbody2D.AddForce(transform.up);
 
                 _heldTime += Time.deltaTime;
-            
-                fuel -= Time.deltaTime * _heldTime;
+
+                var usage = Time.deltaTime * _heldTime;
+                usage = Mathf.Max(usage, 0.01f);
+                fuel -= usage;
                 fuel = Mathf.Max(fuel, 0f);
             }
             else
             {
+                fire.emitting = false;
                 _heldTime = 0f;
             }
         }

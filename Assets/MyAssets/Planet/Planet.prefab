@@ -201,6 +201,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   gravityText: {fileID: 8744488682593528562}
   rigidbody2D: {fileID: 1026628154825863667}
+  gravityField: {fileID: 704158561748626757}
 --- !u!212 &6169763766309217568
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -385,8 +386,8 @@ MonoBehaviour:
     m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 8.069376
-  m_PointLightOuterRadius: 4
+  m_PointLightInnerRadius: 2.017344
+  m_PointLightOuterRadius: 4.034688
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
@@ -407,6 +408,7 @@ GameObject:
   m_Component:
   - component: {fileID: 517705483048552869}
   - component: {fileID: 6014397678766693193}
+  - component: {fileID: 704158561748626757}
   m_Layer: 0
   m_Name: gravity ring
   m_TagString: Untagged
@@ -481,6 +483,41 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!58 &704158561748626757
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7705043188320351552}
+  m_Enabled: 1
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_UsedByComposite: 0
+  m_Offset: {x: 0, y: 0}
+  serializedVersion: 2
+  m_Radius: 5.1199994
 --- !u!1 &9024297871775385846
 GameObject:
   m_ObjectHideFlags: 0
