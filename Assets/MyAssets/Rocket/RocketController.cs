@@ -44,7 +44,7 @@ namespace MyAssets.Rocket
         {
             if (_deepSpace) return;
 
-            if (fuel == 0 && rigidbody2D.velocity.magnitude < 0.01f)
+            if (fuel == 0 && rigidbody2D.velocity.magnitude < 0.05f)
             {
                 ResetLevel();
                 return;
