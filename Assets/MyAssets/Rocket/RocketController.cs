@@ -105,11 +105,14 @@ namespace MyAssets.Rocket
         {
             if (_deepSpace) return;
             rigidbody2D.AddForceAtPosition(gravity, transform.position + transform.up);
+            var forwardForce = Mathf.Abs(gravity.magnitude) * 0.5f;
+            rigidbody2D.AddForce(transform.up * forwardForce);
         }
 
         public void Crashed(Planet.Planet planet, Collision2D col)
         {
             Invoke(nameof(ResetLevel), 1f);
+            rigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
         }
 
         public void WarpGate(WarpGate warpGate, Collider2D col, float power)
