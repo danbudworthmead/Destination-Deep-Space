@@ -2,6 +2,7 @@ using System;
 using MyAssets.Rocket;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Rendering.Universal;
 
 namespace MyAssets.Planet
 {
@@ -23,6 +24,7 @@ namespace MyAssets.Planet
         {
             var direction = (transform.position - _rocketController.transform.position) * 0.1f;
             _magnitude = (1 - direction.magnitude) * rigidbody2D.mass;
+            _magnitude = Mathf.Max(_magnitude, 0f);
             if (Mathf.Abs(_magnitude) < 0.7f)
                 _magnitude = 0f;
 

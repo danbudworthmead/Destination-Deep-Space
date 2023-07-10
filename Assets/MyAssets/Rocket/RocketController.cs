@@ -1,3 +1,4 @@
+using System;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -30,14 +31,24 @@ namespace MyAssets.Rocket
             _maxFuel = fuel;
         }
 
-        private void FixedUpdate()
+        private void Update()
         {
             if (Input.GetKeyDown(KeyCode.R))
             {
                 SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
             }
-        
+        }
+
+        private void FixedUpdate()
+        {
             if (_deepSpace) return;
+
+            if (fuel == 0 && rigidbody2D.velocity.magnitude < 0.01f)
+            {
+                ResetLevel();
+                return;
+            }
+            
             var propulsion = Input.GetMouseButton(0) && fuel > 0;
             animator.SetBool(PropulsionAnimHash, propulsion);
             if (propulsion)
@@ -103,7 +114,8 @@ namespace MyAssets.Rocket
 
         public void WarpGate(WarpGate warpGate, Collider2D col, float power)
         {
-            rigidbody2D.AddForce(warpGate.transform.right * power);
+            rigidbody2D.AddForce(warpGate.transform.up * power);
+            transform.rotation = warpGate.transform.rotation;
         }
     }
 }
