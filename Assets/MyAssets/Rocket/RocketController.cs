@@ -52,6 +52,7 @@ namespace MyAssets.Rocket
                     transform.localScale.x * 0.8f, 
                      Mathf.Min(transform.localScale.y * 1.2f, 3f),
                     transform.localScale.z);
+                fire.enabled = false;
                 return;
             }
 
