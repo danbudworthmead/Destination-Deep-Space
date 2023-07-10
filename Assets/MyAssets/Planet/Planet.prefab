@@ -199,9 +199,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 4f9301279ccafe44ab0426c0671c7183, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  gravityText: {fileID: 8744488682593528562}
   rigidbody2D: {fileID: 1026628154825863667}
-  gravityField: {fileID: 704158561748626757}
 --- !u!212 &6169763766309217568
 SpriteRenderer:
   m_ObjectHideFlags: 0
@@ -266,7 +264,7 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.5
+  m_Mass: 2
   m_LinearDrag: 0
   m_AngularDrag: 0.05
   m_GravityScale: 1
@@ -386,8 +384,8 @@ MonoBehaviour:
     m_Extent: {x: 0.9985302, y: 0.99853027, z: 0}
   m_PointLightInnerAngle: 360
   m_PointLightOuterAngle: 360
-  m_PointLightInnerRadius: 2.017344
-  m_PointLightOuterRadius: 4.034688
+  m_PointLightInnerRadius: 0.69032824
+  m_PointLightOuterRadius: 1.3806565
   m_ShapeLightParametricSides: 5
   m_ShapeLightParametricAngleOffset: 0
   m_ShapeLightParametricRadius: 1
@@ -407,6 +405,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 517705483048552869}
+  - component: {fileID: 4264419715666252763}
   - component: {fileID: 6014397678766693193}
   - component: {fileID: 704158561748626757}
   m_Layer: 0
@@ -431,6 +430,21 @@ Transform:
   m_Father: {fileID: 5115368421365840737}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &4264419715666252763
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 7705043188320351552}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 849218f9a84f99d4c8298fce0aa3517e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  gravityText: {fileID: 8744488682593528562}
+  collider2D: {fileID: 704158561748626757}
+  rigidbody2D: {fileID: 1026628154825863667}
 --- !u!212 &6014397678766693193
 SpriteRenderer:
   m_ObjectHideFlags: 0

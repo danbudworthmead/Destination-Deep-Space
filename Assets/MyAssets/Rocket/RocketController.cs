@@ -1,4 +1,5 @@
 using System;
+using System.Diagnostics.CodeAnalysis;
 using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -24,7 +25,7 @@ namespace MyAssets.Rocket
         private void OnBecameInvisible()
         {
             if (_deepSpace) return;
-            Invoke(nameof(ResetLevel), 1f);
+            ResetLevel();
         }
 
         private void Awake()
@@ -40,9 +41,19 @@ namespace MyAssets.Rocket
             }
         }
 
+        [SuppressMessage("ReSharper", "Unity.InefficientPropertyAccess")]
         private void FixedUpdate()
         {
-            if (_deepSpace) return;
+            if (_deepSpace)
+            {
+                rigidbody2D.rotation = 90f;
+                rigidbody2D.AddForce(Vector2.right * 10f);
+                transform.localScale = new Vector3(
+                    transform.localScale.x * 0.8f, 
+                     Mathf.Min(transform.localScale.y * 1.2f, 3f),
+                    transform.localScale.z);
+                return;
+            }
 
             if (fuel == 0 && rigidbody2D.velocity.magnitude < 0.05f)
             {
@@ -88,6 +99,7 @@ namespace MyAssets.Rocket
             if (_deepSpace) return;
             animator.SetBool(PropulsionAnimHash, false);
             _deepSpace = true;
+            rigidbody2D.velocity = Vector2.zero;
             Invoke(nameof(NextLevel), 2f);
         }
 
@@ -110,7 +122,7 @@ namespace MyAssets.Rocket
         {
             if (_deepSpace) return;
             rigidbody2D.AddForceAtPosition(gravity, transform.position + transform.up);
-            var forwardForce = Mathf.Abs(gravity.magnitude) * 0.5f;
+            var forwardForce = Mathf.Abs(gravity.magnitude) * 0.65f;
             rigidbody2D.AddForce(transform.up * forwardForce);
         }
 
