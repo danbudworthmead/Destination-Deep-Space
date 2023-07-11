@@ -1,6 +1,6 @@
 using System;
+using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
-using TMPro;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -11,7 +11,6 @@ namespace MyAssets.Rocket
     {
         [SerializeField] private new Rigidbody2D rigidbody2D;
         [SerializeField] private Animator animator;
-        [SerializeField] private TMP_Text speedText;
         [SerializeField] private Slider slider;
         [SerializeField] private float fuel;
         [SerializeField] private Image fuelFillImage;
@@ -21,6 +20,10 @@ namespace MyAssets.Rocket
         private bool _deepSpace;
         private float _maxFuel;
         private float _heldTime;
+        private readonly Stopwatch _stopwatch = new();
+        
+        public float Speed => (int)(rigidbody2D.velocity.magnitude * 1000);
+        public float SecondsPassed => _stopwatch.ElapsedMilliseconds / 1000f;
 
         private void OnBecameInvisible()
         {
@@ -66,6 +69,11 @@ namespace MyAssets.Rocket
             animator.SetBool(PropulsionAnimHash, propulsion);
             if (propulsion)
             {
+                if (!_stopwatch.IsRunning)
+                {
+                    _stopwatch.Start();
+                }
+                
                 fire.emitting = true;
                 rigidbody2D.AddForce(transform.up);
 
@@ -86,8 +94,6 @@ namespace MyAssets.Rocket
         private void LateUpdate()
         {
             // update UI
-            var speed = (int)(rigidbody2D.velocity.magnitude * 1000);
-            speedText.text = $"{speed}km/h";
             slider.value = fuel / _maxFuel;
             if (fuel <= 0f)
             {
@@ -101,6 +107,7 @@ namespace MyAssets.Rocket
             animator.SetBool(PropulsionAnimHash, false);
             _deepSpace = true;
             rigidbody2D.velocity = Vector2.zero;
+            _stopwatch.Stop();
             Invoke(nameof(NextLevel), 2f);
         }
 
