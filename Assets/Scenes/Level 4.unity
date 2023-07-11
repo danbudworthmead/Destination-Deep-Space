@@ -299,6 +299,18 @@ PrefabInstance:
       propertyPath: m_Name
       value: Planet (1)
       objectReference: {fileID: 0}
+    - target: {fileID: 6169763766309217568, guid: b6c4d776c72eda3479443581d07f4a96, type: 3}
+      propertyPath: m_Color.b
+      value: 0.858841
+      objectReference: {fileID: 0}
+    - target: {fileID: 6169763766309217568, guid: b6c4d776c72eda3479443581d07f4a96, type: 3}
+      propertyPath: m_Color.g
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6169763766309217568, guid: b6c4d776c72eda3479443581d07f4a96, type: 3}
+      propertyPath: m_Color.r
+      value: 0.7137255
+      objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
@@ -402,6 +414,14 @@ PrefabInstance:
     - target: {fileID: 5672028879278683012, guid: b6c4d776c72eda3479443581d07f4a96, type: 3}
       propertyPath: m_Name
       value: Planet (2)
+      objectReference: {fileID: 0}
+    - target: {fileID: 6169763766309217568, guid: b6c4d776c72eda3479443581d07f4a96, type: 3}
+      propertyPath: m_Color.b
+      value: 0.8509829
+      objectReference: {fileID: 0}
+    - target: {fileID: 6169763766309217568, guid: b6c4d776c72eda3479443581d07f4a96, type: 3}
+      propertyPath: m_Color.g
+      value: 0.7137255
       objectReference: {fileID: 0}
     m_RemovedComponents: []
     m_RemovedGameObjects: []
@@ -762,7 +782,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3311274403730148752, guid: 9e456f385cfdcb944a60c7116b563af2, type: 3}
       propertyPath: m_LocalPosition.y
-      value: 2.31
+      value: 1.82
       objectReference: {fileID: 0}
     - target: {fileID: 3311274403730148752, guid: 9e456f385cfdcb944a60c7116b563af2, type: 3}
       propertyPath: m_LocalPosition.z
