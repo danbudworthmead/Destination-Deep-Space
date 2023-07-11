@@ -16,7 +16,7 @@ namespace MyAssets.Planet
         {
             var rocket = col.gameObject.GetComponent<RocketController>();
             if (!rocket) return;
-            rocket.Crashed(this, col);
+            rocket.Crashed(gameObject, col);
         }
     }
 }

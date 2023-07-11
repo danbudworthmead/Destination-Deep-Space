@@ -127,7 +127,7 @@ namespace MyAssets.Rocket
             rigidbody2D.AddForce(transform.up * forwardForce);
         }
 
-        public void Crashed(Planet.Planet planet, Collision2D col)
+        public void Crashed(GameObject obj, Collision2D col)
         {
             Invoke(nameof(ResetLevel), 1f);
             rigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
