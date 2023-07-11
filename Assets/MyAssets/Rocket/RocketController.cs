@@ -1,4 +1,3 @@
-using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
@@ -15,10 +14,13 @@ namespace MyAssets.Rocket
         [SerializeField] private float fuel;
         [SerializeField] private Image fuelFillImage;
         [SerializeField] private TrailRenderer fire;
-    
+        [SerializeField] private GameObject brokenPartPrefab;
+        [SerializeField] private SpriteRenderer spriteRenderer;
+        
         private bool _deepSpace;
         private float _maxFuel;
         private float _heldTime;
+        private Vector2 _prevVel;
         private readonly Stopwatch _stopwatch = new();
         
         public float Speed => (int)(rigidbody2D.velocity.magnitude * 1000);
@@ -98,6 +100,8 @@ namespace MyAssets.Rocket
             {
                 fuelFillImage.enabled = false;
             }
+
+            _prevVel = rigidbody2D.velocity;
         }
 
         public void ReachedDeepSpace()
@@ -134,9 +138,43 @@ namespace MyAssets.Rocket
 
         public void Crashed(GameObject obj, Collision2D col)
         {
-            Invoke(nameof(ResetLevel), 1f);
+            BreakApart();
             rigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
+            GetComponent<Collider2D>().enabled = false;
+            Invoke(nameof(ResetLevel), 2f);
         }
+
+        private void BreakApart()
+        {
+            spriteRenderer.enabled = false;
+
+            var texture = spriteRenderer.sprite.texture;
+            var width = texture.width;
+            var height = texture.height;
+            var spriteBounds = spriteRenderer.sprite.bounds;
+
+            for (var y = 0; y < height; ++y)
+            {
+                for (var x = 0; x < width; ++x)
+                {
+                    var col = texture.GetPixel(x, y);
+                    if (col.a < 0.5f) continue;
+            
+                    var brokenPart = Instantiate(brokenPartPrefab);
+            
+                    // Calculate position in world space
+                    var pixelPos = new Vector2(x / (float)width, y / (float)height);
+                    var worldPos = transform.TransformPoint(spriteBounds.min + Vector3.Scale(spriteBounds.size, pixelPos));
+                    brokenPart.transform.position = worldPos;
+
+                    brokenPart.GetComponent<SpriteRenderer>().color = col;
+
+                    Vector2 force = _prevVel * Random.Range(5f, 20f);
+                    brokenPart.GetComponent<Rigidbody2D>().AddForce(force);
+                }
+            }
+        }
+
 
         public void WarpGate(WarpGate warpGate, Collider2D col, float power)
         {

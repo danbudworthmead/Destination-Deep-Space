@@ -346,6 +346,8 @@ MonoBehaviour:
   fuel: 3
   fuelFillImage: {fileID: 0}
   fire: {fileID: 7289007724892990551}
+  brokenPartPrefab: {fileID: 380669141977278988, guid: 9c870527db5934b4497811ab16f0bae2, type: 3}
+  spriteRenderer: {fileID: 5910499613533690263}
 --- !u!50 &1070236325316771418
 Rigidbody2D:
   serializedVersion: 4
