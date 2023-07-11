@@ -1,3 +1,4 @@
+using System.Collections;
 using MyAssets.Rocket;
 using UnityEngine;
 
@@ -12,16 +13,24 @@ namespace MyAssets.Worm_Hole
             if (!target) return;
             var rocket = col.GetComponent<RocketController>();
             if (!rocket) return;
-            target.Teleport(rocket);
+            target.StartCoroutine(target.CoTeleport(rocket));
         }
 
-        private void Teleport(RocketController rocket)
+        private void Teleport(RocketController rocket, float magnitude)
         {
             rocket.transform.position = transform.position;
             rocket.transform.rotation = transform.rotation;
-            
-            var rb = rocket.GetComponent<Rigidbody2D>();
-            rb.velocity = transform.up.normalized * rb.velocity.magnitude;
+            rocket.SetVelocity(transform.up.normalized * magnitude);
+        }
+
+        private IEnumerator CoTeleport(RocketController rocket)
+        {
+            var magnitude = rocket.Magnitude;
+            rocket.StartTeleport();
+            yield return new WaitForSeconds(0.25f);
+            Teleport(rocket, magnitude);
+            yield return new WaitForSeconds(0.25f);
+            rocket.EndTeleport();
         }
     }
 }

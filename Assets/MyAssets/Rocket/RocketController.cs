@@ -16,7 +16,6 @@ namespace MyAssets.Rocket
         [SerializeField] private Image fuelFillImage;
         [SerializeField] private TrailRenderer fire;
     
-        private static readonly int PropulsionAnimHash = Animator.StringToHash("propulsion");
         private bool _deepSpace;
         private float _maxFuel;
         private float _heldTime;
@@ -24,6 +23,7 @@ namespace MyAssets.Rocket
         
         public float Speed => (int)(rigidbody2D.velocity.magnitude * 1000);
         public float SecondsPassed => _stopwatch.ElapsedMilliseconds / 1000f;
+        public float Magnitude => rigidbody2D.velocity.magnitude;
 
         private void OnBecameInvisible()
         {
@@ -66,7 +66,6 @@ namespace MyAssets.Rocket
             }
             
             var propulsion = Input.GetMouseButton(0) && fuel > 0;
-            animator.SetBool(PropulsionAnimHash, propulsion);
             if (propulsion)
             {
                 if (!_stopwatch.IsRunning)
@@ -104,7 +103,6 @@ namespace MyAssets.Rocket
         public void ReachedDeepSpace()
         {
             if (_deepSpace) return;
-            animator.SetBool(PropulsionAnimHash, false);
             _deepSpace = true;
             rigidbody2D.velocity = Vector2.zero;
             _stopwatch.Stop();
@@ -144,6 +142,33 @@ namespace MyAssets.Rocket
         {
             rigidbody2D.AddForce(warpGate.transform.up * power);
             transform.rotation = warpGate.transform.rotation;
+        }
+
+        public void StartTeleport()
+        {
+            foreach (var trail in GetComponentsInChildren<TrailRenderer>())
+            {
+                trail.emitting = false;
+            }
+
+            // transform.localScale = Vector3.zero;
+            animator.SetBool("teleport", true);
+        }
+
+        public void EndTeleport()
+        {
+            foreach (var trail in GetComponentsInChildren<TrailRenderer>())
+            {
+                trail.emitting = true;
+            }
+            
+            // transform.localScale = Vector3.one;
+            animator.SetBool("teleport", false);
+        }
+
+        public void SetVelocity(Vector3 vel)
+        {
+            rigidbody2D.velocity = vel;
         }
     }
 }
