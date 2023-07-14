@@ -6,7 +6,7 @@ namespace MyAssets.Planet
     [ExecuteInEditMode]
     public class LightUpdater : MonoBehaviour
     {
-        [SerializeField] private Light2D light;
+        [SerializeField] private new Light2D light;
         private void Update()
         {
             var scale = transform.localScale.x;

@@ -8,7 +8,7 @@ namespace MyAssets.UI
         public void Pause()
         {
             Time.timeScale = 0;
-            SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+            SceneManager.LoadScene("Level Selection");
             Time.timeScale = 1;
             // gameObject.SetActive(false);
         }

@@ -1,8 +1,6 @@
-using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
-using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -121,6 +119,7 @@ namespace MyAssets.Rocket
             _deepSpace = true;
             rigidbody2D.velocity = Vector2.zero;
             _stopwatch.Stop();
+            SaveManager.Unlock(SceneManager.GetActiveScene().buildIndex, _stopwatch.ElapsedMilliseconds);
             Invoke(nameof(NextLevel), 2f);
         }
 

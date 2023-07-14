@@ -1,45 +1,65 @@
-using System;
+using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
+using UnityEngine.SceneManagement;
 
 namespace MyAssets.UI.Level_Selection
 {
     public class LevelSelector : MonoBehaviour
     {
         [SerializeField] private Rocket rocket;
+        [SerializeField] private TMP_Text levelText;
         private Collider2D[] _starColliders;
-        
+        private Camera _camera;
+
+        private int _unlocked;
+
+        private int _selectedLevel;
+
         private void Start()
         {
+            SaveManager.Load();
+            _unlocked = SaveManager.GetHighestUnlockedLevel();
+            _camera = Camera.main;
             var rng = new System.Random(0);
-            var unlocked = 7;
             var lineRenderer = GetComponent<LineRenderer>();
-            lineRenderer.positionCount = unlocked;
+            lineRenderer.positionCount = _unlocked;
             _starColliders = new Collider2D[transform.childCount];
             for (var i = 0; i < transform.childCount; ++i)
             {
                 var child = transform.GetChild(i);
-                _starColliders[i] = transform.GetComponent<Collider2D>();
-                if (i < unlocked)
+                _starColliders[i] = child.GetComponent<Collider2D>();
+                if (i < _unlocked)
                 {
                     lineRenderer.SetPosition(i, child.transform.position);
                 }
+                else
+                {
+                    child.gameObject.SetActive(false);
+                }
 
                 var light2D = child.GetComponentInChildren<Light2D>();
-                light2D.intensity = i >= unlocked ? 5 : 10;
+                light2D.intensity = 5;
                 var lightColour = Color.HSVToRGB(0.05f * rng.Next(20), 0.3f, 1f);
                 light2D.color = lightColour;
 
                 var spriteRenderer = child.GetComponentInChildren<SpriteRenderer>();
+                spriteRenderer.color = lightColour;
+
+                spriteRenderer.transform.localScale = new Vector3(
+                    rng.Next(50, 150) * 0.01f,
+                    rng.Next(50, 150) * 0.01f,
+                    1f);
+                
                 var rotation = rng.Next(36) * 10;
                 spriteRenderer.transform.rotation = Quaternion.AngleAxis(rotation, Vector3.back);
-                if (i >= unlocked)
+                if (i >= _unlocked)
                 {
                     spriteRenderer.color /= 10;
                 } 
-                else if (i == unlocked - 1)
+                else if (i == _unlocked - 1)
                 {
-                    spriteRenderer.color /= 6;
+                    spriteRenderer.color /= 2;
                 }
             }
 
@@ -50,17 +70,60 @@ namespace MyAssets.UI.Level_Selection
 
         private void Update()
         {
-            if (Input.GetMouseButton(0))
+            var hovered = GetStarHovered();
+            var nearest = GetNearestStar();
+            
+            if (hovered == null || nearest == null) return;
+
+            foreach (var starCollider in _starColliders)
             {
-                var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-                foreach (var starCollider in _starColliders)
-                {
-                    if (starCollider.bounds.Contains(mousePos))
-                    {
-                        rocket.MoveTo(starCollider.transform.position);
-                    }
-                }
+                if (!starCollider.gameObject.activeInHierarchy) break;
+                starCollider.GetComponentInChildren<Light2D>().intensity = starCollider == hovered ? 10 : 5;
             }
+
+            _selectedLevel = hovered.transform.GetSiblingIndex();
+            levelText.text = $"Level: {_selectedLevel + 1}";
+
+            if (_selectedLevel > nearest.transform.GetSiblingIndex())
+            {
+                rocket.MoveTo(_starColliders[nearest.transform.GetSiblingIndex() + 1].transform.position);
+            }
+            else if (_selectedLevel < nearest.transform.GetSiblingIndex())
+            {
+                rocket.MoveTo(_starColliders[nearest.transform.GetSiblingIndex() - 1].transform.position);
+            }
+        }
+
+        public void PlayLevel()
+        {
+            SceneManager.LoadScene($"Level {_selectedLevel}");
+        }
+
+        private Collider2D GetNearestStar()
+        {
+            var nearestDist = 0.1f;
+            Collider2D nearestStar = null;
+            foreach (var starCollider in _starColliders)
+            {
+                var dist = Vector2.Distance(starCollider.transform.position, rocket.transform.position);
+                if (dist > nearestDist) continue;
+                nearestDist = dist;
+                nearestStar = starCollider;
+            }
+
+            return nearestStar;
+        }
+
+        private Collider2D GetStarHovered()
+        {
+            Vector2 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
+            foreach (var starCollider in _starColliders)
+            {
+                if (starCollider.transform.GetSiblingIndex() >= _unlocked) break;
+                if (starCollider.OverlapPoint(mousePosition)) return starCollider;
+            }
+
+            return null;
         }
     }
 }
