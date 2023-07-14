@@ -34,6 +34,7 @@ namespace MyAssets.Rocket
         private void OnBecameVisible()
         {
             _visible = true;
+            rigidbody2D.velocity = Vector2.right;
         }
 
         private void OnBecameInvisible()
@@ -51,6 +52,11 @@ namespace MyAssets.Rocket
         [SuppressMessage("ReSharper", "Unity.InefficientPropertyAccess")]
         private void FixedUpdate()
         {
+            if (!_visible)
+            {
+                rigidbody2D.AddForce(Vector2.right);
+            }
+            
             if (_deepSpace)
             {
                 rigidbody2D.rotation = 90f;

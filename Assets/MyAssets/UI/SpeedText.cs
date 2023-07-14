@@ -16,7 +16,7 @@ namespace MyAssets.UI
 
         private void LateUpdate()
         {
-            text.text = $"{_rocket.Speed}km/h";
+            text.text = _rocket.Speed == 0 ? string.Empty : $"{_rocket.Speed}km/h";
         }
     }
 }
