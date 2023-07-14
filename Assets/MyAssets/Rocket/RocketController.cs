@@ -1,8 +1,11 @@
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
 using UnityEngine;
+using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace MyAssets.Rocket
 {
@@ -17,6 +20,7 @@ namespace MyAssets.Rocket
         [SerializeField] private GameObject brokenPartPrefab;
         [SerializeField] private SpriteRenderer spriteRenderer;
         
+        private bool _visible;
         private bool _deepSpace;
         private float _maxFuel;
         private float _heldTime;
@@ -27,23 +31,21 @@ namespace MyAssets.Rocket
         public float SecondsPassed => _stopwatch.ElapsedMilliseconds / 1000f;
         public float Magnitude => rigidbody2D.velocity.magnitude;
 
+        private void OnBecameVisible()
+        {
+            _visible = true;
+        }
+
         private void OnBecameInvisible()
         {
+            _visible = false;
             if (_deepSpace) return;
-            ResetLevel();
+            Invoke(nameof(ResetLevel), 0.25f);
         }
 
         private void Awake()
         {
             _maxFuel = fuel;
-        }
-
-        private void Update()
-        {
-            if (Input.GetKeyDown(KeyCode.R))
-            {
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-            }
         }
 
         [SuppressMessage("ReSharper", "Unity.InefficientPropertyAccess")]
@@ -66,8 +68,10 @@ namespace MyAssets.Rocket
                 ResetLevel();
                 return;
             }
-            
-            var propulsion = Input.GetMouseButton(0) && fuel > 0;
+
+            var propulsion = Input.GetMouseButton(0)
+                             && fuel > 0
+                             && spriteRenderer.enabled;
             if (propulsion)
             {
                 if (!_stopwatch.IsRunning)
@@ -106,6 +110,7 @@ namespace MyAssets.Rocket
 
         public void ReachedDeepSpace()
         {
+            if (!_visible) return;
             if (_deepSpace) return;
             _deepSpace = true;
             rigidbody2D.velocity = Vector2.zero;
