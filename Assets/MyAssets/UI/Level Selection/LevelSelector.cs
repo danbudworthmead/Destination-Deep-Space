@@ -6,16 +6,20 @@ namespace MyAssets.UI.Level_Selection
 {
     public class LevelSelector : MonoBehaviour
     {
+        [SerializeField] private Rocket rocket;
+        private Collider2D[] _starColliders;
+        
         private void Start()
         {
             var rng = new System.Random(0);
             var unlocked = 7;
             var lineRenderer = GetComponent<LineRenderer>();
             lineRenderer.positionCount = unlocked;
+            _starColliders = new Collider2D[transform.childCount];
             for (var i = 0; i < transform.childCount; ++i)
             {
                 var child = transform.GetChild(i);
-
+                _starColliders[i] = transform.GetComponent<Collider2D>();
                 if (i < unlocked)
                 {
                     lineRenderer.SetPosition(i, child.transform.position);
@@ -36,6 +40,25 @@ namespace MyAssets.UI.Level_Selection
                 else if (i == unlocked - 1)
                 {
                     spriteRenderer.color /= 6;
+                }
+            }
+
+            var firstRocketPos = transform.GetChild(0).transform.position;
+            rocket.MoveTo(firstRocketPos);
+            rocket.transform.position = firstRocketPos;
+        }
+
+        private void Update()
+        {
+            if (Input.GetMouseButton(0))
+            {
+                var mousePos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+                foreach (var starCollider in _starColliders)
+                {
+                    if (starCollider.bounds.Contains(mousePos))
+                    {
+                        rocket.MoveTo(starCollider.transform.position);
+                    }
                 }
             }
         }

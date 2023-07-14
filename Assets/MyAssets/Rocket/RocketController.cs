@@ -88,9 +88,9 @@ namespace MyAssets.Rocket
                 fire.emitting = true;
                 rigidbody2D.AddForce(transform.up);
 
-                _heldTime += Time.deltaTime;
+                _heldTime += Time.fixedDeltaTime;
 
-                var usage = Time.deltaTime * _heldTime;
+                var usage = Time.fixedDeltaTime * _heldTime;
                 usage = Mathf.Max(usage, 0.01f);
                 fuel -= usage;
                 fuel = Mathf.Max(fuel, 0f);
