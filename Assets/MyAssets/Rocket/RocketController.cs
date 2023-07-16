@@ -20,11 +20,10 @@ namespace MyAssets.Rocket
         [SerializeField] private Transform partsParent;
         [SerializeField] private AudioSource rocketSound;
         
-        private bool _visible;
+        public bool Visible { get; private set; }
         private bool _deepSpace;
         private float _maxFuel;
         private float _heldTime;
-        private Vector2 _prevVel;
         private readonly Stopwatch _stopwatch = new();
         
         public float Speed => (int)(rigidbody2D.velocity.magnitude * 1000);
@@ -33,13 +32,13 @@ namespace MyAssets.Rocket
 
         private void OnBecameVisible()
         {
-            _visible = true;
+            Visible = true;
             rigidbody2D.velocity = Vector2.right;
         }
 
         private void OnBecameInvisible()
         {
-            _visible = false;
+            Visible = false;
             if (_deepSpace) return;
             Invoke(nameof(ResetLevel), 0.25f);
         }
@@ -52,7 +51,7 @@ namespace MyAssets.Rocket
         [SuppressMessage("ReSharper", "Unity.InefficientPropertyAccess")]
         private void FixedUpdate()
         {
-            if (!_visible)
+            if (!Visible)
             {
                 rigidbody2D.AddForce(Vector2.right);
             }
@@ -116,13 +115,11 @@ namespace MyAssets.Rocket
             {
                 fuelFillImage.enabled = false;
             }
-
-            _prevVel = rigidbody2D.velocity;
         }
 
         public void ReachedDeepSpace()
         {
-            if (!_visible) return;
+            if (!Visible) return;
             if (_deepSpace) return;
             _deepSpace = true;
             rigidbody2D.velocity = Vector2.zero;
