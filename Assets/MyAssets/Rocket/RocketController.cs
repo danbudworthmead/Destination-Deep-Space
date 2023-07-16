@@ -1,9 +1,10 @@
+using System;
 using System.Diagnostics;
 using System.Diagnostics.CodeAnalysis;
+using MyAssets.Level_Editor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
-using Random = UnityEngine.Random;
 
 namespace MyAssets.Rocket
 {
@@ -19,12 +20,13 @@ namespace MyAssets.Rocket
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Transform partsParent;
         [SerializeField] private AudioSource rocketSound;
-        
+
         public bool Visible { get; private set; }
         private bool _deepSpace;
         private float _maxFuel;
         private float _heldTime;
         private readonly Stopwatch _stopwatch = new();
+        private LevelEditorManager _levelEditorManager;
         
         public float Speed => (int)(rigidbody2D.velocity.magnitude * 1000);
         public float SecondsPassed => _stopwatch.ElapsedMilliseconds / 1000f;
@@ -46,6 +48,7 @@ namespace MyAssets.Rocket
         private void Awake()
         {
             _maxFuel = fuel;
+            _levelEditorManager = FindObjectOfType<LevelEditorManager>();
         }
 
         [SuppressMessage("ReSharper", "Unity.InefficientPropertyAccess")]
@@ -83,11 +86,6 @@ namespace MyAssets.Rocket
                 {
                     _stopwatch.Start();
                 }
-
-                if (!rocketSound.isPlaying)
-                {
-                    rocketSound.Play();   
-                }
                 
                 fire.emitting = true;
                 rigidbody2D.AddForce(transform.up);
@@ -109,11 +107,20 @@ namespace MyAssets.Rocket
 
         private void LateUpdate()
         {
-            // update UI
+            // TODO: this is really shit code, fix it
+            if (slider == null)
+            {
+                slider = FindObjectOfType<Slider>();
+                return;
+            }
+            
             slider.value = fuel / _maxFuel;
             if (fuel <= 0f)
             {
-                fuelFillImage.enabled = false;
+                if (fuelFillImage != null)
+                {
+                    fuelFillImage.enabled = false;
+                }
             }
         }
 
@@ -124,12 +131,22 @@ namespace MyAssets.Rocket
             _deepSpace = true;
             rigidbody2D.velocity = Vector2.zero;
             _stopwatch.Stop();
-            SaveManager.Unlock(SceneManager.GetActiveScene().buildIndex, _stopwatch.ElapsedMilliseconds);
+            if (_levelEditorManager)
+            {
+                _levelEditorManager.Passed();
+                return;
+            }
             Invoke(nameof(NextLevel), 2f);
+            SaveManager.Unlock(SceneManager.GetActiveScene().buildIndex, _stopwatch.ElapsedMilliseconds);
         }
 
         private void ResetLevel()
         {
+            if (_levelEditorManager)
+            {
+                _levelEditorManager.Failed();
+                return;
+            }
             SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
         }
 
@@ -162,6 +179,7 @@ namespace MyAssets.Rocket
 
         private void BreakApart()
         {
+            if (_levelEditorManager) return;
             spriteRenderer.enabled = false;
             foreach (var part in partsParent.GetComponentsInChildren<Rigidbody2D>())
             {

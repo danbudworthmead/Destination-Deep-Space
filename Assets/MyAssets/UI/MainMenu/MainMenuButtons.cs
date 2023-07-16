@@ -9,5 +9,10 @@ namespace MyAssets.UI.MainMenu
         {
             SceneManager.LoadScene("Level Selection");
         }
+
+        public void CommunityMaps()
+        {
+            SceneManager.LoadScene("Community Levels");
+        }
     }
 }
