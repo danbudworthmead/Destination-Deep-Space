@@ -69,7 +69,15 @@ namespace MyAssets.UI.Level_Selection
             rocket.MoveTo(firstRocketPos);
             rocket.transform.position = firstRocketPos;
 
-            _lastHovered = _starColliders.Last();
+            GoToLastStar();
+        }
+
+        private void GoToLastStar()
+        {
+            if (_lastHovered == null)
+            {
+                _lastHovered = _starColliders.Last();
+            }
         }
 
         private void Update()
