@@ -337,6 +337,7 @@ GameObject:
   - component: {fileID: 1070236325316771418}
   - component: {fileID: 2541467172560761565}
   - component: {fileID: 8146207848704608227}
+  - component: {fileID: 6124197894445285826}
   m_Layer: 0
   m_Name: rocket
   m_TagString: Untagged
@@ -384,6 +385,7 @@ MonoBehaviour:
   brokenPartPrefab: {fileID: 380669141977278988, guid: 9c870527db5934b4497811ab16f0bae2, type: 3}
   spriteRenderer: {fileID: 5910499613533690263}
   partsParent: {fileID: 796922521056117672}
+  rocketSound: {fileID: 6124197894445285826}
 --- !u!50 &1070236325316771418
 Rigidbody2D:
   serializedVersion: 4
@@ -508,6 +510,102 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
+--- !u!82 &6124197894445285826
+AudioSource:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2298068581457385376}
+  m_Enabled: 0
+  serializedVersion: 4
+  OutputAudioMixerGroup: {fileID: 0}
+  m_audioClip: {fileID: 8300000, guid: ddb653878549e1942a14b355903cfb94, type: 3}
+  m_PlayOnAwake: 0
+  m_Volume: 1
+  m_Pitch: 1
+  Loop: 1
+  Mute: 0
+  Spatialize: 0
+  SpatializePostEffects: 0
+  Priority: 128
+  DopplerLevel: 1
+  MinDistance: 1
+  MaxDistance: 500
+  Pan2D: 0
+  rolloffMode: 0
+  BypassEffects: 0
+  BypassListenerEffects: 0
+  BypassReverbZones: 0
+  rolloffCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    - serializedVersion: 3
+      time: 1
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  panLevelCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  spreadCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 0
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
+  reverbZoneMixCustomCurve:
+    serializedVersion: 2
+    m_Curve:
+    - serializedVersion: 3
+      time: 0
+      value: 1
+      inSlope: 0
+      outSlope: 0
+      tangentMode: 0
+      weightedMode: 0
+      inWeight: 0.33333334
+      outWeight: 0.33333334
+    m_PreInfinity: 2
+    m_PostInfinity: 2
+    m_RotationOrder: 4
 --- !u!1 &2419622692051728011
 GameObject:
   m_ObjectHideFlags: 0
@@ -518,8 +616,8 @@ GameObject:
   m_Component:
   - component: {fileID: 2472880617197572736}
   - component: {fileID: 5244113691761357283}
-  - component: {fileID: 4961685197197544736}
-  - component: {fileID: 8961998182936894644}
+  - component: {fileID: 8083903464594325014}
+  - component: {fileID: 4367596809248057877}
   m_Layer: 0
   m_Name: ship part 3
   m_TagString: Untagged
@@ -594,7 +692,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &4961685197197544736
+--- !u!61 &8083903464594325014
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -637,9 +735,9 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.1925, y: 0.34583333}
+  m_Size: {x: 0.15, y: 0.45}
   m_EdgeRadius: 0
---- !u!50 &8961998182936894644
+--- !u!50 &4367596809248057877
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -651,9 +749,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.0001
-  m_LinearDrag: 0
-  m_AngularDrag: 0
+  m_Mass: 0.24000001
+  m_LinearDrag: 1
+  m_AngularDrag: 150
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -676,8 +774,8 @@ GameObject:
   m_Component:
   - component: {fileID: 4004524311042753379}
   - component: {fileID: 5655481057281004922}
-  - component: {fileID: 543878579038634169}
-  - component: {fileID: 1500234689218675123}
+  - component: {fileID: 7875890829153340978}
+  - component: {fileID: 1728883502483469482}
   m_Layer: 0
   m_Name: ship part 2
   m_TagString: Untagged
@@ -752,7 +850,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &543878579038634169
+--- !u!61 &7875890829153340978
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -795,9 +893,9 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.20083334, y: 0.325}
+  m_Size: {x: 0.15, y: 0.45}
   m_EdgeRadius: 0
---- !u!50 &1500234689218675123
+--- !u!50 &1728883502483469482
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -809,9 +907,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.0001
-  m_LinearDrag: 0
-  m_AngularDrag: 0
+  m_Mass: 0.24000001
+  m_LinearDrag: 1
+  m_AngularDrag: 150
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:
@@ -834,8 +932,8 @@ GameObject:
   m_Component:
   - component: {fileID: 3969120971589041553}
   - component: {fileID: 5724161176390097006}
-  - component: {fileID: 2301193576982029553}
-  - component: {fileID: 5151329313856869382}
+  - component: {fileID: 4213796622129862717}
+  - component: {fileID: 7394545275810783852}
   m_Layer: 0
   m_Name: ship part 1
   m_TagString: Untagged
@@ -910,7 +1008,7 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 0
---- !u!61 &2301193576982029553
+--- !u!61 &4213796622129862717
 BoxCollider2D:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -953,9 +1051,9 @@ BoxCollider2D:
     adaptiveTiling: 0
   m_AutoTiling: 0
   serializedVersion: 2
-  m_Size: {x: 0.18166667, y: 0.485}
+  m_Size: {x: 0.15, y: 0.45}
   m_EdgeRadius: 0
---- !u!50 &5151329313856869382
+--- !u!50 &7394545275810783852
 Rigidbody2D:
   serializedVersion: 4
   m_ObjectHideFlags: 0
@@ -967,9 +1065,9 @@ Rigidbody2D:
   m_Simulated: 1
   m_UseFullKinematicContacts: 0
   m_UseAutoMass: 0
-  m_Mass: 0.0001
-  m_LinearDrag: 0
-  m_AngularDrag: 0
+  m_Mass: 0.24000001
+  m_LinearDrag: 1
+  m_AngularDrag: 150
   m_GravityScale: 1
   m_Material: {fileID: 0}
   m_IncludeLayers:

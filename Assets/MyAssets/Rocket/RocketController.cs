@@ -18,6 +18,7 @@ namespace MyAssets.Rocket
         [SerializeField] private GameObject brokenPartPrefab;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Transform partsParent;
+        [SerializeField] private AudioSource rocketSound;
         
         private bool _visible;
         private bool _deepSpace;
@@ -83,6 +84,11 @@ namespace MyAssets.Rocket
                 {
                     _stopwatch.Start();
                 }
+
+                if (!rocketSound.isPlaying)
+                {
+                    rocketSound.Play();   
+                }
                 
                 fire.emitting = true;
                 rigidbody2D.AddForce(transform.up);
@@ -98,6 +104,7 @@ namespace MyAssets.Rocket
             {
                 fire.emitting = false;
                 _heldTime = 0f;
+                rocketSound.Stop();
             }
         }
 
