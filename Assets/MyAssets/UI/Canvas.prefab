@@ -1095,7 +1095,7 @@ GameObject:
   - component: {fileID: 138261418648534613}
   - component: {fileID: 4473790350169306197}
   m_Layer: 5
-  m_Name: Reset
+  m_Name: Quit
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0

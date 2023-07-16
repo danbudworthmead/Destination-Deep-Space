@@ -1,3 +1,4 @@
+using System.Linq;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
@@ -15,6 +16,7 @@ namespace MyAssets.UI.Level_Selection
         private int _unlocked;
 
         private int _selectedLevel;
+        private Collider2D _lastHovered;
 
         private void Start()
         {
@@ -24,14 +26,14 @@ namespace MyAssets.UI.Level_Selection
             var rng = new System.Random(0);
             var lineRenderer = GetComponent<LineRenderer>();
             lineRenderer.positionCount = _unlocked;
-            _starColliders = new Collider2D[transform.childCount];
+            _starColliders = new Collider2D[_unlocked];
             for (var i = 0; i < transform.childCount; ++i)
             {
                 var child = transform.GetChild(i);
-                _starColliders[i] = child.GetComponent<Collider2D>();
                 if (i < _unlocked)
                 {
                     lineRenderer.SetPosition(i, child.transform.position);
+                    _starColliders[i] = child.GetComponent<Collider2D>();
                 }
                 else
                 {
@@ -66,11 +68,20 @@ namespace MyAssets.UI.Level_Selection
             var firstRocketPos = transform.GetChild(0).transform.position;
             rocket.MoveTo(firstRocketPos);
             rocket.transform.position = firstRocketPos;
+
+            _lastHovered = _starColliders.Last();
         }
 
         private void Update()
         {
             var hovered = GetStarHovered();
+            if (hovered != null)
+            {
+                _lastHovered = hovered;
+            }
+
+            hovered = _lastHovered;
+            
             var nearest = GetNearestStar();
             
             if (hovered == null || nearest == null) return;
@@ -116,6 +127,8 @@ namespace MyAssets.UI.Level_Selection
 
         private Collider2D GetStarHovered()
         {
+            if (!Input.GetMouseButton(0)) return null;
+            
             Vector2 mousePosition = _camera.ScreenToWorldPoint(Input.mousePosition);
             foreach (var starCollider in _starColliders)
             {
@@ -124,6 +137,11 @@ namespace MyAssets.UI.Level_Selection
             }
 
             return null;
+        }
+
+        public void Quit()
+        {
+            SceneManager.LoadScene("Main Menu");
         }
     }
 }
