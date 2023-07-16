@@ -17,6 +17,7 @@ namespace MyAssets.Rocket
         [SerializeField] private TrailRenderer fire;
         [SerializeField] private GameObject brokenPartPrefab;
         [SerializeField] private SpriteRenderer spriteRenderer;
+        [SerializeField] private Transform partsParent;
         
         private bool _visible;
         private bool _deepSpace;
@@ -148,6 +149,7 @@ namespace MyAssets.Rocket
 
         public void Crashed(GameObject obj, Collision2D col)
         {
+            _stopwatch.Stop();
             BreakApart();
             rigidbody2D.constraints = RigidbodyConstraints2D.FreezeAll;
             GetComponent<Collider2D>().enabled = false;
@@ -157,32 +159,11 @@ namespace MyAssets.Rocket
         private void BreakApart()
         {
             spriteRenderer.enabled = false;
-
-            var texture = spriteRenderer.sprite.texture;
-            var width = texture.width;
-            var height = texture.height;
-            var spriteBounds = spriteRenderer.sprite.bounds;
-
-            for (var y = 0; y < height; ++y)
+            foreach (var part in partsParent.GetComponentsInChildren<Rigidbody2D>())
             {
-                for (var x = 0; x < width; ++x)
-                {
-                    var col = texture.GetPixel(x, y);
-                    if (col.a < 0.5f) continue;
-            
-                    var brokenPart = Instantiate(brokenPartPrefab);
-            
-                    // Calculate position in world space
-                    var pixelPos = new Vector2(x / (float)width, y / (float)height);
-                    var worldPos = transform.TransformPoint(spriteBounds.min + Vector3.Scale(spriteBounds.size, pixelPos));
-                    brokenPart.transform.position = worldPos;
-
-                    brokenPart.GetComponent<SpriteRenderer>().color = col;
-
-                    Vector2 force = _prevVel * Random.Range(5f, 20f);
-                    brokenPart.GetComponent<Rigidbody2D>().AddForce(force);
-                }
+                AddExplosionForce(part, 1000f, transform.position, 100f);
             }
+            partsParent.DetachChildren();
         }
 
 
@@ -217,6 +198,27 @@ namespace MyAssets.Rocket
         public void SetVelocity(Vector3 vel)
         {
             rigidbody2D.velocity = vel;
+        }
+        
+        public static void AddExplosionForce(Rigidbody2D rb, float explosionForce, Vector2 explosionPosition, float explosionRadius, float upwardsModifier = 0.0F, ForceMode2D mode = ForceMode2D.Force)
+        {
+            var explosionDir = rb.position - explosionPosition;
+            var explosionDistance = (explosionDir.magnitude / explosionRadius);
+
+            // Normalize without computing magnitude again
+            if (upwardsModifier == 0)
+            {
+                explosionDir /= explosionDistance;
+            }
+            else
+            {
+                // If you pass a non-zero value for the upwardsModifier parameter, the direction
+                // will be modified by subtracting that value from the Y component of the centre point.
+                explosionDir.y += upwardsModifier;
+                explosionDir.Normalize();
+            }
+
+            rb.AddForce(Mathf.Lerp(0, explosionForce, (1 - explosionDistance)) * explosionDir, mode);
         }
     }
 }
