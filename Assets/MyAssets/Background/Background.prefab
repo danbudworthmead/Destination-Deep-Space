@@ -9,6 +9,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 3962150874748521267}
+  - component: {fileID: 5453948793077691105}
   - component: {fileID: 1236488919291385032}
   - component: {fileID: 2783677722342990295}
   m_Layer: 0
@@ -33,6 +34,18 @@ Transform:
   m_Father: {fileID: 2468267592752454989}
   m_RootOrder: -1
   m_LocalEulerAnglesHint: {x: -90, y: 0, z: 0}
+--- !u!114 &5453948793077691105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1490062016907524378}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: aaaf179dd0f28d14c8f67636f144d2b5, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!198 &1236488919291385032
 ParticleSystem:
   m_ObjectHideFlags: 0
@@ -50,7 +63,7 @@ ParticleSystem:
   emitterVelocityMode: 1
   looping: 1
   prewarm: 1
-  playOnAwake: 1
+  playOnAwake: 0
   useUnscaledTime: 0
   autoRandomSeed: 1
   startDelay:
@@ -4917,7 +4930,7 @@ Transform:
   m_Children:
   - {fileID: 3962150874748521267}
   m_Father: {fileID: 0}
-  m_RootOrder: 0
+  m_RootOrder: 7
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!212 &1455483412468764358
 SpriteRenderer:
