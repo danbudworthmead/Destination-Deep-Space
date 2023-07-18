@@ -11,12 +11,19 @@ router.get("/", async (req, res) => {
       delete map.props;
       map.score = map.votes.up - map.votes.down;
       delete map.votes;
+      delete map.date;
+      delete map.completions;
+      delete map._id;
       maps.push(map);
     }
 
     // Sort the maps by score in descending order
     maps.sort((mapA, mapB) => mapB.score - mapA.score);
-    res.status(200).send(maps);
+    
+    // Take only the top 20 rated maps
+    const topRatedMaps = maps.slice(0, 20);
+
+    res.status(200).send({maps: topRatedMaps});
   } catch (error) {
     console.error("Error retrieving maps:", error);
     res.status(500).send("Internal Server Error");

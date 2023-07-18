@@ -6,8 +6,8 @@ const port = 30674;
 
 app.use(express.json());
 
-// Custom limiter for POST map requests
-const mapLimited = rateLimit({
+// Apply the custom limiter only to the POST route
+app.use("/map", rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 6, // Limit to 6 map creations per hour from the same IP
   message: 'Too many map creations recently, please try again later.',
@@ -15,13 +15,9 @@ const mapLimited = rateLimit({
   keyGenerator: (req) => {
     return req.ip;
   },
-});
+}));
 
-// Apply the custom limiter only to the POST route
-app.use("/map", mapLimited);
-
-// Custom limiter for POST vote requests
-const voteLimited = rateLimit({
+app.use("/vote", rateLimit({
   windowMs: 60 * 60 * 1000, // 1 hour
   max: 20, // Limit to 20 votes per hour from the same IP
   message: 'Too many votes recently, please try again later.',
@@ -29,14 +25,13 @@ const voteLimited = rateLimit({
   keyGenerator: (req) => {
     return req.ip;
   },
-});
-
-app.use("/vote", voteLimited);
+}));
 
 // routes
 app.use('/map', require('./routes/map'));
 app.use('/vote', require('./routes/vote'));
 app.use('/all', require('./routes/all'));
+app.use('/7d', require('./routes/7d'));
 
 // Error handling middleware
 app.use((err, req, res, next) => {
