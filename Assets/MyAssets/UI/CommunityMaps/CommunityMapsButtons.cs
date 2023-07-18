@@ -17,11 +17,17 @@ namespace MyAssets.UI.CommunityMaps
 
         private void OnEnable()
         {
+            DestroyAllButtons();
             loading.SetActive(true);
             Populate();
         }
 
         private void OnDisable()
+        {
+            DestroyAllButtons();
+        }
+
+        private void DestroyAllButtons()
         {
             while (transform.childCount > 0)
             {
