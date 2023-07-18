@@ -1,6 +1,5 @@
-using System;
-using System.Runtime.CompilerServices;
 using System.Threading.Tasks;
+using MyAssets.Networking;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -12,8 +11,6 @@ namespace MyAssets.UI.CommunityMaps
         [SerializeField] private GameObject levelButton;
         [SerializeField] private GameObject loading;
         [SerializeField] private string request;
-        
-        private const string Uri = "localhost:30674";
 
         private void OnEnable()
         {
@@ -37,7 +34,7 @@ namespace MyAssets.UI.CommunityMaps
 
         private async void Populate()
         {
-            using var webRequest = UnityWebRequest.Get($"{Uri}/{request}");
+            using var webRequest = UnityWebRequest.Get($"{Constants.Uri}/{request}");
             var asyncOperation = webRequest.SendWebRequest();
 
             while (!asyncOperation.isDone)

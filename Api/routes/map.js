@@ -2,9 +2,20 @@ const express = require("express");
 const router = express.Router();
 const { addMapToCollection, initializeDatabase } = require('../helpers/dbHelpers');
 
+router.use(express.json()); // Parse JSON data
 router.post("/", async (req, res) => {
-  console.log(`${req.hostname} used POST/map`);
+  console.log(`${req.hostname} used POST/map ${JSON.stringify(req.body)}`);
   const levelData = req.body;
+
+  if (!levelData) {
+    res.status(400).send("body was undefined");
+    return;
+  }
+
+  if (!levelData.name) {
+    res.status(400).send("name was undefined");
+    return;
+  }
 
   // do some checking here on levelData
 

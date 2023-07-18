@@ -9,10 +9,11 @@ namespace MyAssets.Level_Editor
         [Serializable]
         public class Prop
         {
+            public string id;
             public int x, y;
         }
 
-        public Prop[] props = new Prop[32];
-        public int propCount;
+        public string name;
+        public Prop[] props;
     }
 }
