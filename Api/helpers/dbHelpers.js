@@ -2,12 +2,12 @@ const { MongoClient } = require("mongodb");
 
 // Replace this with your actual MongoDB connection string from an environment variable
 const mongodbConnString = process.env.MONGODB_CONN_STRING;
+const client = new MongoClient(mongodbConnString);
+client.connect();
+const collection = client.db('CommunityLevelsDB').collection('CommunityLevelsColl');
 
 async function initializeDatabase() {
-  console.log(`MONGODB_CONN_STRING: ${mongodbConnString}`)
-  const client = new MongoClient(mongodbConnString);
-  await client.connect();
-  return client.db('CommunityLevelsDB').collection('CommunityLevelsColl');
+  return collection;
 }
 
 async function addMapToCollection(levelData, collection) {

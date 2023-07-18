@@ -4,6 +4,7 @@ namespace MyAssets.Networking
 {
     public class Constants : MonoBehaviour
     {
-        public const string Uri = "localhost:30674";
+        public const string Uri = "play.skeld.net:30674";
+        // public const string Uri = "localhost:30674";
     }
 }
