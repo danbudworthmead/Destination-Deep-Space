@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 using Input = UnityEngine.Input;
 
 namespace MyAssets.Level_Editor
@@ -20,6 +21,7 @@ namespace MyAssets.Level_Editor
         [SerializeField] private GameObject submitPanel;
         [SerializeField] private TMP_Text levelName;
         [SerializeField] private TMP_Text errorText;
+        [SerializeField] private Button uploadButton;
 
         private bool _playMode;
         private GameObject _rocket;
@@ -88,6 +90,7 @@ namespace MyAssets.Level_Editor
 
         public async void SubmitLevel()
         {
+            uploadButton.interactable = false;
             errorText.text = string.Empty;
             if (levelName.text == string.Empty)
             {
@@ -144,6 +147,7 @@ namespace MyAssets.Level_Editor
             {
                 // Request failed, handle the error
                 errorText.text = $"{webRequest.result}: {webRequest.error} {webRequest.downloadHandler.text}";
+                uploadButton.interactable = true;
             }
         }
     }

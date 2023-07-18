@@ -819,7 +819,7 @@ MonoBehaviour:
   m_fontSizeMax: 20
   m_fontStyle: 0
   m_HorizontalAlignment: 2
-  m_VerticalAlignment: 256
+  m_VerticalAlignment: 512
   m_textAlignment: 65535
   m_characterSpacing: 0
   m_wordSpacing: 0
@@ -1685,6 +1685,7 @@ MonoBehaviour:
   submitPanel: {fileID: 594839599}
   levelName: {fileID: 1113512325}
   errorText: {fileID: 465469678}
+  uploadButton: {fileID: 199422234}
 --- !u!1001 &1507714281
 PrefabInstance:
   m_ObjectHideFlags: 0

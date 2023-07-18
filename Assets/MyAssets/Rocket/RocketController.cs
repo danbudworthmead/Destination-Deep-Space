@@ -25,7 +25,9 @@ namespace MyAssets.Rocket
         private float _maxFuel;
         private float _heldTime;
         private readonly Stopwatch _stopwatch = new();
+        
         private LevelEditorManager _levelEditorManager;
+        private CustomLevelLoader _customLevelLoader;
         
         public float Speed => (int)(rigidbody2D.velocity.magnitude * 1000);
         public float SecondsPassed => _stopwatch.ElapsedMilliseconds / 1000f;
@@ -48,6 +50,7 @@ namespace MyAssets.Rocket
         {
             _maxFuel = fuel;
             _levelEditorManager = FindObjectOfType<LevelEditorManager>();
+            _customLevelLoader = FindObjectOfType<CustomLevelLoader>();
         }
 
         [SuppressMessage("ReSharper", "Unity.InefficientPropertyAccess")]
@@ -133,6 +136,11 @@ namespace MyAssets.Rocket
             if (_levelEditorManager)
             {
                 _levelEditorManager.Passed();
+                return;
+            }
+            if (_customLevelLoader)
+            {
+                _customLevelLoader.Passed();
                 return;
             }
             Invoke(nameof(NextLevel), 2f);

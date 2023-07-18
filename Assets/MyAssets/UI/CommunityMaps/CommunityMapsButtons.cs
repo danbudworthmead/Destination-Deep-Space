@@ -3,6 +3,8 @@ using MyAssets.Networking;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Networking;
+using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 namespace MyAssets.UI.CommunityMaps
 {
@@ -11,6 +13,8 @@ namespace MyAssets.UI.CommunityMaps
         [SerializeField] private GameObject levelButton;
         [SerializeField] private GameObject loading;
         [SerializeField] private string request;
+
+        private bool _loading;
 
         private void OnEnable()
         {
@@ -66,13 +70,14 @@ namespace MyAssets.UI.CommunityMaps
             var height = levelButton.GetComponent<RectTransform>().sizeDelta.y;
             var rect = GetComponent<RectTransform>();
             
-            
             foreach (var level in levels)
             {
                 var button = Instantiate(levelButton, transform);
                 button.transform.Find("ID").GetComponent<TMP_Text>().text = $"{level.id}";
                 button.transform.Find("Name").GetComponent<TMP_Text>().text = level.name;
                 button.transform.Find("Score").GetComponent<TMP_Text>().text = $"{level.score}";
+
+                button.GetComponent<Button>().onClick.AddListener(() => LoadCustomLevel(level.id));
                 
                 var size = rect.sizeDelta;
                 size.y = height * transform.childCount;
@@ -80,6 +85,37 @@ namespace MyAssets.UI.CommunityMaps
                 
                 await Task.Delay(10);
             }
+        }
+
+        private async void LoadCustomLevel(int levelID)
+        {
+            if (_loading) return;
+            
+            _loading = true;
+            using var webRequest = UnityWebRequest.Get($"{Constants.Uri}/map/{levelID}");
+            var asyncOperation = webRequest.SendWebRequest();
+
+            while (!asyncOperation.isDone)
+            {
+                await Task.Yield();
+            }
+
+            // Check for errors
+            if (webRequest.result != UnityWebRequest.Result.Success)
+            {
+                loading.GetComponent<TMP_Text>().text = webRequest.error;
+                Debug.LogError($"Error: {webRequest.error}");
+            }
+            else
+            {
+                // Request completed successfully
+                var data = webRequest.downloadHandler.text;
+                Debug.Log($"Response: {data}");
+                var level = JsonUtility.FromJson<MyAssets.Level_Editor.Level>(data);
+                CustomLevelLoader.SetLevel(level);
+                SceneManager.LoadScene("Play Custom Level");
+            }
+            _loading = false;
         }
     }
 }
