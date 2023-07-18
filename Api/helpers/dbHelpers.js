@@ -4,6 +4,7 @@ const { MongoClient } = require("mongodb");
 const mongodbConnString = process.env.MONGODB_CONN_STRING;
 
 async function initializeDatabase() {
+  console.log(`MONGODB_CONN_STRING: ${mongodbConnString}`)
   const client = new MongoClient(mongodbConnString);
   await client.connect();
   return client.db('CommunityLevelsDB').collection('CommunityLevelsColl');
