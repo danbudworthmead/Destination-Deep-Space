@@ -1,7 +1,4 @@
-using System;
 using System.Collections.Generic;
-using System.IO;
-using System.Runtime.Serialization.Formatters.Binary;
 using System.Text;
 using System.Threading.Tasks;
 using MyAssets.Networking;
@@ -119,36 +116,34 @@ namespace MyAssets.Level_Editor
             var json = JsonUtility.ToJson(level);
 
             // Create a byte array from the JSON data
-            byte[] jsonBytes = Encoding.UTF8.GetBytes(json);
+            var jsonBytes = Encoding.UTF8.GetBytes(json);
 
-            using (var webRequest = new UnityWebRequest($"{Constants.Uri}/map", "POST"))
+            using var webRequest = new UnityWebRequest($"{Constants.Uri}/map", "POST");
+            webRequest.uploadHandler = new UploadHandlerRaw(jsonBytes);
+            webRequest.downloadHandler = new DownloadHandlerBuffer();
+
+            // Set the Content-Type header to indicate JSON data
+            webRequest.SetRequestHeader("Content-Type", "application/json");
+
+            // Send the request
+            var asyncOperation = webRequest.SendWebRequest();
+
+            // Handle the response
+            while (!webRequest.isDone)
             {
-                webRequest.uploadHandler = new UploadHandlerRaw(jsonBytes);
-                webRequest.downloadHandler = new DownloadHandlerBuffer();
+                errorText.text = $"Uploading... {webRequest.uploadProgress}%";
+                await Task.Yield();
+            }
 
-                // Set the Content-Type header to indicate JSON data
-                webRequest.SetRequestHeader("Content-Type", "application/json");
-
-                // Send the request
-                var asyncOperation = webRequest.SendWebRequest();
-
-                // Handle the response
-                while (!webRequest.isDone)
-                {
-                    errorText.text = $"Uploading... {webRequest.uploadProgress}";
-                    await Task.Yield();
-                }
-
-                if (webRequest.result == UnityWebRequest.Result.Success)
-                {
-                    // Request completed successfully
-                    errorText.text = "Level submitted successfully.";
-                }
-                else
-                {
-                    // Request failed, handle the error
-                    errorText.text = $"{webRequest.result}: {webRequest.error} {webRequest.downloadHandler.text}";
-                }
+            if (webRequest.result == UnityWebRequest.Result.Success)
+            {
+                // Request completed successfully
+                errorText.text = "Level submitted successfully.";
+            }
+            else
+            {
+                // Request failed, handle the error
+                errorText.text = $"{webRequest.result}: {webRequest.error} {webRequest.downloadHandler.text}";
             }
         }
     }
