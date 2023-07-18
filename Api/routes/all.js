@@ -16,8 +16,6 @@ router.get("/", async (req, res) => {
 
     // Sort the maps by score in descending order
     maps.sort((mapA, mapB) => mapB.score - mapA.score);
-
-    console.log(maps);
     res.status(200).send(maps);
   } catch (error) {
     console.error("Error retrieving maps:", error);

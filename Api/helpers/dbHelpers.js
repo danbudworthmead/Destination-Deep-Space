@@ -22,7 +22,7 @@ async function addMapToCollection(levelData, collection) {
     completions: 0,
   };
   await collection.insertOne(level);
-  console.log(`Added map ${level.name}`);
+  console.log(`Added map ${level.name} with id: ${level.id}`);
 }
 
 module.exports = { initializeDatabase, addMapToCollection };
