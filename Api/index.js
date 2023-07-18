@@ -20,14 +20,17 @@ app.post("/map", async (req, res) => {
     console.log(`${req.hostname} used POST/map`);
 
     const levelData = req.body;
+
+    // do some checking here on levelData
+
     const level = {
         date: new Date().toJSON(),
         id: await collection.countDocuments(),
         name: levelData.name,
         props: levelData.props,
         votes: {
-            up: getRandomInt(100),
-            down: getRandomInt(100),
+            up: 0, //getRandomInt(100),
+            down: 0, //getRandomInt(100),
         },
         completions: 0,
     };
@@ -75,8 +78,38 @@ app.get("/all", async (req, res) => {
 /*
  * Vote on a map
  */
-app.post("/vote/:score", async (req, res) => {
-    const { score } = req.params;
+app.post("/vote/:id/:score", async (req, res) => {
+    const id = parseInt(req.params.id);
+    const score = parseInt(req.params.score);
+
+    if (!(score == -1 || score == 1)) {
+        // invalid vote
+        res.status(400).send(`Invalid vote of ${score}`);
+        return;
+    }
+
+    const map = await collection.findOne({id: id});
+    if (map == undefined) {
+        res.status(400).send(`Invalid map id of ${id}`);
+        return;
+    }
+
+    if (score == 1) {
+        map.votes.up++;
+    } else if (score == -1) {
+        map.votes.down++;
+    }
+
+    const options = { upsert: false };
+
+    // update the doc
+    await collection.updateOne({id: id}, {"$set": {
+        votes: map.votes,
+        completions: ++map.completions,
+    }}, options);
+
+    // send the response
+    res.status(200).send(`Score of ${id} is now ${map.votes.up - map.votes.down}`);
 });
 
 function getRandomInt(max) {
