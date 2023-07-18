@@ -13,6 +13,7 @@ router.get("/", async (req, res) => {
       delete map.votes;
       delete map.date;
       delete map.completions;
+      map.id = map._id.toString();
       delete map._id;
       maps.push(map);
     }

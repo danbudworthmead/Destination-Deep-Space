@@ -87,7 +87,7 @@ namespace MyAssets.UI.CommunityMaps
             }
         }
 
-        private async void LoadCustomLevel(int levelID)
+        private async void LoadCustomLevel(string levelID)
         {
             if (_loading) return;
             
@@ -112,7 +112,7 @@ namespace MyAssets.UI.CommunityMaps
                 var data = webRequest.downloadHandler.text;
                 Debug.Log($"Response: {data}");
                 var level = JsonUtility.FromJson<MyAssets.Level_Editor.Level>(data);
-                CustomLevelLoader.SetLevel(level);
+                CustomLevelLoader.SetLevel(levelID, level);
                 SceneManager.LoadScene("Play Custom Level");
             }
             _loading = false;

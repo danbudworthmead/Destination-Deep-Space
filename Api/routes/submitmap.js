@@ -4,7 +4,6 @@ const { addMapToCollection, initializeDatabase } = require('../helpers/dbHelpers
 
 router.use(express.json()); // Parse JSON data
 router.post("/", async (req, res) => {
-  console.log(`${req.hostname} used POST/map ${JSON.stringify(req.body)}`);
   const levelData = req.body;
 
   if (!levelData) {

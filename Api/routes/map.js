@@ -1,16 +1,16 @@
 const express = require("express");
 const router = express.Router();
 const { initializeDatabase } = require('../helpers/dbHelpers');
+const { ObjectId } = require("mongodb");
 
 router.use(express.json()); // Parse JSON data
 
 router.get("/:id", async (req, res) => {
   const { id } = req.params;
-  console.log(`${req.hostname} used GET/map/${id}`);
 
   try {
     const collection = await initializeDatabase();
-    const mapData = await collection.findOne({ id: parseInt(id) });
+    const mapData = await collection.findOne({ _id: new ObjectId(id) });
     if (mapData) {
       res.status(200).send(mapData);
     } else {

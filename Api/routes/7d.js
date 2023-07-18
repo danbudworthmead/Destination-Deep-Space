@@ -19,8 +19,9 @@ router.get("/", async (req, res) => {
         delete map.props;
         delete map.votes;
         delete map.completions;
-        delete map._id;
         delete map.date;
+        map.id = map._id.toString();
+        delete map._id;
         topRatedMaps.push(map);
       }
     }

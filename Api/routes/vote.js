@@ -1,9 +1,10 @@
 const express = require("express");
 const router = express.Router();
 const { initializeDatabase } = require('../helpers/dbHelpers');
+const { ObjectId } = require("mongodb");
 
 router.post("/:id/:score", async (req, res) => {
-  const id = parseInt(req.params.id);
+  const id = req.params.id;
   const score = parseInt(req.params.score);
 
   if (score !== -1 && score !== 1) {
@@ -13,7 +14,7 @@ router.post("/:id/:score", async (req, res) => {
 
   try {
     const collection = await initializeDatabase();
-    const map = await collection.findOne({ id: id });
+    const map = await collection.findOne({ _id: new ObjectId(id) });
 
     if (!map) {
       res.status(404).send(`Map with id ${id} not found`);
@@ -29,7 +30,7 @@ router.post("/:id/:score", async (req, res) => {
     const options = { upsert: false };
 
     // update the doc
-    await collection.updateOne({ id: id }, {
+    await collection.updateOne({ _id: new ObjectId(id) }, {
       "$set": {
         votes: map.votes,
         completions: ++map.completions,
