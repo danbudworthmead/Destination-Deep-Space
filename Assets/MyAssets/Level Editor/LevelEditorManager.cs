@@ -121,7 +121,7 @@ namespace MyAssets.Level_Editor
             // Create a byte array from the JSON data
             var jsonBytes = Encoding.UTF8.GetBytes(json);
 
-            using var webRequest = new UnityWebRequest($"{Constants.Uri}/map", "POST");
+            using var webRequest = new UnityWebRequest($"{Constants.Uri}/submitmap", "POST");
             webRequest.uploadHandler = new UploadHandlerRaw(jsonBytes);
             webRequest.downloadHandler = new DownloadHandlerBuffer();
 
