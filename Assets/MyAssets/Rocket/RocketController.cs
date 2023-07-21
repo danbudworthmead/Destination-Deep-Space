@@ -3,7 +3,6 @@ using System.Diagnostics.CodeAnalysis;
 using MyAssets.Level_Editor;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.UI;
 
 namespace MyAssets.Rocket
 {
@@ -11,18 +10,17 @@ namespace MyAssets.Rocket
     {
         [SerializeField] private new Rigidbody2D rigidbody2D;
         [SerializeField] private Animator animator;
-        [SerializeField] private Slider slider;
         [SerializeField] private float fuel;
-        [SerializeField] private Image fuelFillImage;
         [SerializeField] private TrailRenderer fire;
         [SerializeField] private GameObject brokenPartPrefab;
         [SerializeField] private SpriteRenderer spriteRenderer;
         [SerializeField] private Transform partsParent;
         [SerializeField] private AudioSource rocketSound;
 
+        public float Fuel => fuel;
+        
         public bool Visible { get; private set; }
         private bool _deepSpace;
-        private float _maxFuel;
         private float _heldTime;
         private readonly Stopwatch _stopwatch = new();
         
@@ -48,7 +46,6 @@ namespace MyAssets.Rocket
 
         private void Awake()
         {
-            _maxFuel = fuel;
             _levelEditorManager = FindObjectOfType<LevelEditorManager>();
             _customLevelLoader = FindObjectOfType<CustomLevelLoader>();
         }
@@ -104,25 +101,6 @@ namespace MyAssets.Rocket
                 fire.emitting = false;
                 _heldTime = 0f;
                 rocketSound.Stop();
-            }
-        }
-
-        private void LateUpdate()
-        {
-            // TODO: this is really shit code, fix it
-            if (slider == null)
-            {
-                slider = FindObjectOfType<Slider>();
-                return;
-            }
-            
-            slider.value = fuel / _maxFuel;
-            if (fuel <= 0f)
-            {
-                if (fuelFillImage != null)
-                {
-                    fuelFillImage.enabled = false;
-                }
             }
         }
 
