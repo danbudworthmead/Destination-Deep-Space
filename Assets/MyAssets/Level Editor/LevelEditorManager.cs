@@ -3,6 +3,7 @@ using System.Text;
 using System.Threading.Tasks;
 using MyAssets.Networking;
 using TMPro;
+using UnityEditorInternal;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.Networking;
@@ -14,6 +15,8 @@ namespace MyAssets.Level_Editor
 {
     public class LevelEditorManager : MonoBehaviour
     {
+        public static LevelEditorManager Instance;
+        
         [SerializeField] private GameObject planetPrefab;
         [SerializeField] private GameObject buttonsParent;
         [SerializeField] private GameObject rocket;
@@ -22,21 +25,110 @@ namespace MyAssets.Level_Editor
         [SerializeField] private TMP_Text levelName;
         [SerializeField] private TMP_Text errorText;
         [SerializeField] private Button uploadButton;
+        [SerializeField] private GameObject _propPanel;
+        [SerializeField] private GameObject _editPanel;
 
         private bool _playMode;
         private GameObject _rocket;
         private GameObject _rocketCanvas;
+        private Vector2 _mouseWorldPosition;
+        
+        private PlacedProp _selectedProp;
+        private PlacedProp _draggedProp;
+        private List<PlacedProp> _placedProps = new();
+        private Vector2 _dragOffset;
+
+        private void Awake()
+        {
+            Instance = this;
+        }
 
         private void Update()
         {
             if (_playMode) return;
-            var noUiSelected = EventSystem.current.currentSelectedGameObject == null;
-            if (Input.GetMouseButtonDown(0) && noUiSelected)
+            UpdateMousePosition();
+            UpdatePropPosition();
+            UpdateSelectedProp();
+        }
+
+        private void UpdateSidePanel()
+        {
+            if (_selectedProp)
             {
-                var mousePos = Input.mousePosition;
-                var mouseWorldPos = Camera.main.ScreenToWorldPoint(mousePos);
-                Spawn(mouseWorldPos);
+                ShowEditPanel();
             }
+            else
+            {
+                ShowPropsPanel();
+            }
+        }
+
+        public void ShowPropsPanel()
+        {
+            _propPanel.SetActive(true);
+            _editPanel.SetActive(false);
+            _selectedProp = null;
+        }
+
+        public void ShowEditPanel()
+        {
+            _propPanel.SetActive(false);
+            _editPanel.SetActive(true);
+        }
+
+        public void DeleteProp()
+        {
+            _placedProps.Remove(_selectedProp);
+            Destroy(_selectedProp.gameObject);
+            ShowPropsPanel();
+        }
+
+        private void UpdateSelectedProp()
+        {
+            if (Input.GetMouseButtonUp(0))
+            {
+                _draggedProp = null;
+            }
+            else if (Input.GetMouseButtonDown(0))
+            {
+                var minDist = 1.0f;
+                foreach (var prop in _placedProps)
+                {
+                    var dist = Vector2.Distance(prop.transform.position, _mouseWorldPosition);
+                    if (dist < minDist)
+                    {
+                        minDist = dist;
+                        _draggedProp = prop;
+                    }
+                }
+
+                if (_draggedProp != null)
+                {
+                    _dragOffset = (Vector2)_draggedProp.transform.position - _mouseWorldPosition;
+                    _selectedProp = _draggedProp;
+                    ShowEditPanel();
+                }
+            }
+        }
+
+        private void UpdatePropPosition()
+        {
+            if (_draggedProp == null) return;
+            _draggedProp.transform.position = _mouseWorldPosition + _dragOffset;
+        }
+
+        private void UpdateMousePosition()
+        {
+            var mousePos = Input.mousePosition;
+            _mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePos);
+        }
+
+        public void Spawn(GameObject prefab)
+        {
+            var prop = Instantiate(prefab, transform);
+            prop.transform.position = _mouseWorldPosition;
+            _selectedProp = prop.AddComponent<PlacedProp>();
+            _placedProps.Add(_selectedProp);
         }
 
         public void Play()
@@ -54,12 +146,6 @@ namespace MyAssets.Level_Editor
             {
                 Destroy(transform.GetChild(i).gameObject);
             }
-        }
-
-        private void Spawn(Vector2 position)
-        {
-            var prop = Instantiate(planetPrefab, transform);
-            prop.transform.position = position;
         }
 
         public void Quit()
