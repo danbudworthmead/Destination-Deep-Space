@@ -9,7 +9,7 @@ namespace MyAssets.Level_Editor.SidePanel
 
         public void Create()
         {
-            LevelEditorManager.Instance.Spawn(prefab);
+            LevelEditorManager.instance.Spawn(prefab);
         }
 
         public void OnPointerDown(PointerEventData eventData)

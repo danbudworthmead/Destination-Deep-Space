@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
@@ -15,18 +16,18 @@ namespace MyAssets.Level_Editor
 {
     public class LevelEditorManager : MonoBehaviour
     {
-        public static LevelEditorManager Instance;
+        public static LevelEditorManager instance;
         
         [SerializeField] private GameObject planetPrefab;
-        [SerializeField] private GameObject buttonsParent;
+        [SerializeField] private GameObject editModeButtons;
         [SerializeField] private GameObject rocket;
         [SerializeField] private GameObject rocketCanvas;
         [SerializeField] private GameObject submitPanel;
         [SerializeField] private TMP_Text levelName;
         [SerializeField] private TMP_Text errorText;
         [SerializeField] private Button uploadButton;
-        [SerializeField] private GameObject _propPanel;
-        [SerializeField] private GameObject _editPanel;
+        [SerializeField] private GameObject propPanel;
+        [SerializeField] private GameObject editPanel;
 
         private bool _playMode;
         private GameObject _rocket;
@@ -35,12 +36,18 @@ namespace MyAssets.Level_Editor
         
         private PlacedProp _selectedProp;
         private PlacedProp _draggedProp;
-        private List<PlacedProp> _placedProps = new();
+        private readonly List<PlacedProp> _placedProps = new();
         private Vector2 _dragOffset;
 
         private void Awake()
         {
-            Instance = this;
+            instance = this;
+        }
+
+        private void Start()
+        {
+            propPanel.SetActive(true);
+            editPanel.SetActive(false);
         }
 
         private void Update()
@@ -65,15 +72,15 @@ namespace MyAssets.Level_Editor
 
         public void ShowPropsPanel()
         {
-            _propPanel.SetActive(true);
-            _editPanel.SetActive(false);
+            propPanel.SetActive(true);
+            editPanel.SetActive(false);
             _selectedProp = null;
         }
 
         public void ShowEditPanel()
         {
-            _propPanel.SetActive(false);
-            _editPanel.SetActive(true);
+            propPanel.SetActive(false);
+            editPanel.SetActive(true);
         }
 
         public void DeleteProp()
@@ -133,7 +140,9 @@ namespace MyAssets.Level_Editor
 
         public void Play()
         {
-            buttonsParent.SetActive(false);
+            editModeButtons.SetActive(false);
+            propPanel.SetActive(true);
+            editPanel.SetActive(false);
             _rocket = Instantiate(rocket);
             _rocketCanvas = Instantiate(rocketCanvas);
             _rocket.transform.position = new Vector3(-12f, 0f, 0f);
@@ -162,13 +171,13 @@ namespace MyAssets.Level_Editor
         {
             Destroy(_rocket);
             Destroy(_rocketCanvas);
-            buttonsParent.SetActive(false);
+            editModeButtons.SetActive(false);
             submitPanel.SetActive(true);
         }
 
         public void Failed()
         {
-            buttonsParent.SetActive(true);
+            editModeButtons.SetActive(true);
             Destroy(_rocket);
             Destroy(_rocketCanvas);
             _playMode = false;
@@ -235,6 +244,11 @@ namespace MyAssets.Level_Editor
                 errorText.text = $"{webRequest.result}: {webRequest.error} {webRequest.downloadHandler.text}";
                 uploadButton.interactable = true;
             }
+        }
+
+        public void SetScale(Slider slider)
+        {
+            _selectedProp.transform.localScale = Vector3.one * slider.value;
         }
     }
 }
