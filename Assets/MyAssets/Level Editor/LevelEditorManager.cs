@@ -29,6 +29,10 @@ namespace MyAssets.Level_Editor
         [SerializeField] private Button uploadButton;
         [SerializeField] private GameObject propPanel;
         [SerializeField] private GameObject editPanel;
+        [SerializeField] private TMP_Text propCountText;
+        
+        [SerializeField] private Slider scaleSlider;
+        [SerializeField] private Slider gravRingSlider;
 
         private bool _playMode;
         private GameObject _rocket;
@@ -40,6 +44,9 @@ namespace MyAssets.Level_Editor
         private readonly List<PlacedProp> _placedProps = new();
         private Vector2 _dragOffset;
 
+        private const int MaxProps = 10;
+        private int _propCount;
+
         private void Awake()
         {
             instance = this;
@@ -49,6 +56,7 @@ namespace MyAssets.Level_Editor
         {
             propPanel.SetActive(true);
             editPanel.SetActive(false);
+            UpdatePropCountText();
         }
 
         private void Update()
@@ -57,6 +65,13 @@ namespace MyAssets.Level_Editor
             UpdateMousePosition();
             UpdatePropPosition();
             UpdateSelectedProp();
+        }
+
+        private void UpdateSliders()
+        {
+            if (_selectedProp == null) return;
+            scaleSlider.value = _selectedProp.transform.localScale.x;
+            gravRingSlider.value = _selectedProp.GetComponentInChildren<GravityRing>().transform.localScale.x;
         }
 
         private void UpdateSidePanel()
@@ -84,11 +99,9 @@ namespace MyAssets.Level_Editor
             editPanel.SetActive(true);
         }
 
-        public void DeleteProp()
+        private void UpdatePropCountText()
         {
-            _placedProps.Remove(_selectedProp);
-            Destroy(_selectedProp.gameObject);
-            ShowPropsPanel();
+            propCountText.text = $"{_propCount}/{MaxProps}";
         }
 
         private void UpdateSelectedProp()
@@ -115,6 +128,7 @@ namespace MyAssets.Level_Editor
                     _dragOffset = (Vector2)_draggedProp.transform.position - _mouseWorldPosition;
                     _selectedProp = _draggedProp;
                     ShowEditPanel();
+                    UpdateSliders();
                 }
             }
         }
@@ -131,12 +145,24 @@ namespace MyAssets.Level_Editor
             _mouseWorldPosition = Camera.main.ScreenToWorldPoint(mousePos);
         }
 
-        public void Spawn(GameObject prefab)
+        public void SpawnProp(GameObject prefab)
         {
+            if (_propCount >= MaxProps) return;
             var prop = Instantiate(prefab, transform);
             prop.transform.position = _mouseWorldPosition;
             _selectedProp = prop.AddComponent<PlacedProp>();
             _placedProps.Add(_selectedProp);
+            _propCount++;
+            UpdatePropCountText();
+        }
+
+        public void DeleteProp()
+        {
+            _placedProps.Remove(_selectedProp);
+            Destroy(_selectedProp.gameObject);
+            ShowPropsPanel();
+            _propCount--;
+            UpdatePropCountText();
         }
 
         public void Play()
