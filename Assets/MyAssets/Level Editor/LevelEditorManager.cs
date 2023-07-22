@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using MyAssets.Networking;
+using MyAssets.Planet;
 using TMPro;
 using UnityEditorInternal;
 using UnityEngine;
@@ -249,6 +250,12 @@ namespace MyAssets.Level_Editor
         public void SetScale(Slider slider)
         {
             _selectedProp.transform.localScale = Vector3.one * slider.value;
+        }
+        
+        public void SetGravityRingRadius(Slider slider)
+        {
+            var ring = _selectedProp.GetComponentInChildren<GravityRing>();
+            ring.transform.localScale = Vector3.one * slider.value;
         }
     }
 }
