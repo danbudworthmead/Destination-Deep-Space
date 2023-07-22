@@ -10,6 +10,8 @@ namespace MyAssets.Level_Editor
         {
             public string id;
             public int x, y;
+            public int scale;
+            public int gravityRadius;
         }
 
         public string name;

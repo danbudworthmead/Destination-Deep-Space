@@ -1,6 +1,7 @@
 using System.Threading.Tasks;
 using MyAssets.Level_Editor;
 using MyAssets.Networking;
+using MyAssets.Planet;
 using UnityEngine;
 using UnityEngine.Networking;
 using UnityEngine.SceneManagement;
@@ -43,6 +44,8 @@ namespace MyAssets
         {
             var prop = Instantiate(planet, transform);
             prop.transform.position = new Vector3(propData.x / 1000f, propData.y / 1000f, 0f);
+            prop.transform.localScale = Vector3.one * propData.scale / 1000f;
+            prop.GetComponentInChildren<GravityRing>().transform.localScale = Vector3.one * propData.gravityRadius / 1000f;
         }
 
         public void Quit()

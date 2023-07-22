@@ -229,6 +229,8 @@ namespace MyAssets.Level_Editor
                     id = "planet",
                     x = (int)(child.transform.position.x * 1000f),
                     y = (int)(child.transform.position.y * 1000f),
+                    scale = (int)(child.localScale.x * 1000f),
+                    gravityRadius = (int)(child.GetComponentInChildren<GravityRing>().transform.localScale.x * 1000f),
                 });
             }
 
