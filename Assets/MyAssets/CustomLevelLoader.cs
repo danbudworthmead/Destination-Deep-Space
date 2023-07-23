@@ -46,6 +46,11 @@ namespace MyAssets
             prop.transform.position = new Vector3(propData.x / 1000f, propData.y / 1000f, 0f);
             prop.transform.localScale = Vector3.one * propData.scale / 1000f;
             prop.GetComponentInChildren<GravityRing>().transform.localScale = Vector3.one * propData.gravityRadius / 1000f;
+            prop.GetComponent<Rigidbody2D>().mass = propData.mass / 1000f;
+            prop.GetComponentInChildren<SpriteRenderer>().color = new Color(
+                propData.r / 1000f,
+                propData.g / 1000f,
+                propData.b / 1000f);
         }
 
         public void Quit()

@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using MyAssets.Networking;
@@ -28,8 +29,13 @@ namespace MyAssets.Level_Editor
         [SerializeField] private GameObject editPanel;
         [SerializeField] private TMP_Text propCountText;
         
+        [Header("Sliders")]
         [SerializeField] private Slider scaleSlider;
         [SerializeField] private Slider gravRingSlider;
+        [SerializeField] private Slider redSlider;
+        [SerializeField] private Slider greenSlider;
+        [SerializeField] private Slider blueSlider;
+        [SerializeField] private Slider massSlider;
 
         private bool _playMode;
         private GameObject _rocket;
@@ -69,6 +75,11 @@ namespace MyAssets.Level_Editor
             if (_selectedProp == null) return;
             scaleSlider.value = _selectedProp.transform.localScale.x;
             gravRingSlider.value = _selectedProp.GetComponentInChildren<GravityRing>().transform.localScale.x;
+            var col = _selectedProp.GetComponentInChildren<SpriteRenderer>().color;
+            redSlider.value = col.r;
+            greenSlider.value = col.g;
+            blueSlider.value = col.b;
+            massSlider.value = _selectedProp.GetComponentInChildren<Rigidbody2D>().mass;
         }
 
         private void UpdateSidePanel()
@@ -110,23 +121,17 @@ namespace MyAssets.Level_Editor
             else if (Input.GetMouseButtonDown(0))
             {
                 var minDist = 1.0f;
-                foreach (var prop in _placedProps)
+                foreach (var prop in _placedProps.Where(prop => prop.GetComponentInChildren<Collider2D>().bounds.Contains(_mouseWorldPosition)))
                 {
-                    var dist = Vector2.Distance(prop.transform.position, _mouseWorldPosition);
-                    if (dist < minDist)
-                    {
-                        minDist = dist;
-                        _draggedProp = prop;
-                    }
+                    _draggedProp = prop;
+                    break;
                 }
 
-                if (_draggedProp != null)
-                {
-                    _dragOffset = (Vector2)_draggedProp.transform.position - _mouseWorldPosition;
-                    _selectedProp = _draggedProp;
-                    ShowEditPanel();
-                    UpdateSliders();
-                }
+                if (_draggedProp == null) return;
+                _dragOffset = (Vector2)_draggedProp.transform.position - _mouseWorldPosition;
+                _selectedProp = _draggedProp;
+                ShowEditPanel();
+                UpdateSliders();
             }
         }
 
@@ -145,9 +150,11 @@ namespace MyAssets.Level_Editor
         public void SpawnProp(GameObject prefab)
         {
             if (_propCount >= MaxProps) return;
+            UpdateMousePosition();
             var prop = Instantiate(prefab, transform);
             prop.transform.position = _mouseWorldPosition;
-            _selectedProp = prop.AddComponent<PlacedProp>();
+            _draggedProp = prop.AddComponent<PlacedProp>();
+            _selectedProp = _draggedProp;
             _placedProps.Add(_selectedProp);
             _propCount++;
             UpdatePropCountText();
@@ -221,18 +228,25 @@ namespace MyAssets.Level_Editor
             for (var idx = 0; idx < transform.childCount; idx++)
             {
                 var child = transform.GetChild(idx);
+                var color = child.GetComponentInChildren<SpriteRenderer>().color;
+                var pos = child.transform.position;
                 props.Add(new Level.Prop
                 {
                     id = "planet",
-                    x = (int)(child.transform.position.x * 1000f),
-                    y = (int)(child.transform.position.y * 1000f),
+                    x = (int)(pos.x * 1000f),
+                    y = (int)(pos.y * 1000f),
                     scale = (int)(child.localScale.x * 1000f),
                     gravityRadius = (int)(child.GetComponentInChildren<GravityRing>().transform.localScale.x * 1000f),
+                    mass = (int)(child.GetComponent<Rigidbody2D>().mass * 1000f),
+                    r = (int)(color.r * 1000f),
+                    g = (int)(color.g * 1000f),
+                    b = (int)(color.b * 1000f),
                 });
             }
 
             var level = new Level()
             {
+                dataVersion = 1,
                 name = levelName.text,
                 props = props.ToArray(),
             };
@@ -281,6 +295,36 @@ namespace MyAssets.Level_Editor
         {
             var ring = _selectedProp.GetComponentInChildren<GravityRing>();
             ring.transform.localScale = Vector3.one * slider.value;
+        }
+        
+        public void SetMass(Slider slider)
+        {
+            var rb = _selectedProp.GetComponentInChildren<Rigidbody2D>();
+            rb.mass = slider.value;
+        }
+
+        public void SetRed(Slider slider)
+        {
+            var sr = _selectedProp.GetComponentInChildren<SpriteRenderer>();
+            var color = sr.color;
+            color = new Color(slider.value, color.g, color.b);
+            sr.color = color;
+        }
+
+        public void SetGreen(Slider slider)
+        {
+            var sr = _selectedProp.GetComponentInChildren<SpriteRenderer>();
+            var color = sr.color;
+            color = new Color(color.r, slider.value, color.b);
+            sr.color = color;
+        }
+
+        public void SetBlue(Slider slider)
+        {
+            var sr = _selectedProp.GetComponentInChildren<SpriteRenderer>();
+            var color = sr.color;
+            color = new Color(color.r, color.g, slider.value);
+            sr.color = color;
         }
     }
 }
